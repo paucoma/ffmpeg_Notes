@@ -16,7 +16,7 @@ In a constant frame rate video, we can interpret the relationship between Frame 
 
 .. image:: img/setpts_graph_PTSvsN.png
    :align: left
-   :width: 100
+   :width: 100pt
 
 The derivative (slope) of this function is the speed at which it is reproducing the frames, i.e. 1 in this case, as we have normalized it for simplicity.
 
