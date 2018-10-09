@@ -15,8 +15,7 @@ Timebase = 1/75; Timescale = 75
 In a constant frame rate video, we can interpret the relationship between Frame N and PTS as the following linear function.
 
 .. image:: img/setpts_graph_PTSvsN.png
-   :align: center
-   :width: 20
+   :width: 20pt
 
 The derivative (slope) of this function is the speed at which it is reproducing the frames, i.e. 1 in this case, as we have normalized it for simplicity.
 
