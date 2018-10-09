@@ -175,7 +175,7 @@ Examples
   ffplay -v warning tmpcmp1.mp4
 
 
-    `example video <./vid/setpts_clk_example.mp4>`_
+`example video <./vid/setpts_clk_example.mp4>`_
 
 
 ::
