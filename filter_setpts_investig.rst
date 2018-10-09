@@ -132,6 +132,51 @@ Frames from the future would get mapped to the same pts_time as past frames have
 
 Examples
 ---------
+::
+
+  SETLOCAL
+  SET myin=sktin.mp4
+  rem "Speeds up to 0.6"
+  SET expr1="(PTS-STARTPTS)*(1/0.8)*(1-0.2*N/(FR*4))"
+  SET expr1b="(PTS-STARTPTS)*(1/0.8)*(0.6+0.2*N/(FR*4))"
+  rem "Speeds up to 0.4"
+  SET expr2="(PTS-STARTPTS)*(1/0.7)*(1-0.3*N/(FR*4))"
+  SET expr2b="(PTS-STARTPTS)*(1/0.7)*(0.4+0.3*N/(FR*4))"
+  rem "Speeds up to 0.2"
+  SET expr3="(PTS-STARTPTS)*(1/0.6)*(1-0.4*N/(FR*4))"
+  SET expr3b="(PTS-STARTPTS)*(1/0.6)*(0.2+0.4*N/(FR*4))"
+
+  ffmpeg -v info -i %myin% -an -filter_complex ^"^
+  [0:v]trim=0:1,setpts="(PTS-STARTPTS)"[v1];^
+  [0:v]trim=1:5,setpts=%expr1%,^
+  drawtext="fontsize=12:text=%expr1%:x=(w-text_w)/2:y=(h-text_h):fontcolor=red"[v2];^
+  [0:v]trim=5:9,setpts=%expr1b%,^
+  drawtext="fontsize=12:text=%expr1b%:x=(w-text_w)/2:y=(h-text_h):fontcolor=red"[v3];^
+  [0:v]trim=9,setpts="(PTS-STARTPTS)"[v4];^
+  [v1][v2][v3][v4]concat=n=4:v=1" -y ssout1.mp4
+  ffmpeg -v warning -i %myin% -an -filter_complex ^"^
+  [0:v]trim=0:1,setpts="(PTS-STARTPTS)"[v1];^
+  [0:v]trim=1:5,setpts=%expr2%,^
+  drawtext="fontsize=12:text=%expr2%:x=(w-text_w)/2:y=(h-text_h):fontcolor=red"[v2];^
+  [0:v]trim=5:9,setpts=%expr2b%,^
+  drawtext="fontsize=12:text=%expr2b%:x=(w-text_w)/2:y=(h-text_h):fontcolor=red"[v3];^
+  [0:v]trim=9,setpts="(PTS-STARTPTS)"[v4];^
+  [v1][v2][v3][v4]concat=n=4:v=1" -y ssout2.mp4
+  ffmpeg -v warning -i %myin% -an -filter_complex ^"^
+  [0:v]trim=0:1,setpts="(PTS-STARTPTS)"[v1];^
+  [0:v]trim=1:5,setpts=%expr3%,^
+  drawtext="fontsize=12:text=%expr3%:x=(w-text_w)/2:y=(h-text_h):fontcolor=red"[v2];^
+  [0:v]trim=5:9,setpts=%expr3b%,^
+  drawtext="fontsize=12:text=%expr3b%:x=(w-text_w)/2:y=(h-text_h):fontcolor=red"[v3];^
+  [0:v]trim=9,setpts="(PTS-STARTPTS)"[v4];^
+  [v1][v2][v3][v4]concat=n=4:v=1" -y ssout3.mp4
+  ffmpeg -v warning -i %myin% -i ssout1.mp4 -i ssout2.mp4 -i ssout3.mp4 -an -filter_complex ^
+  "[0:v][1:v]hstack[t];[2:v][3:v]hstack[b];[t][b]vstack[v]" -map "[v]" -y tmpcmp1.mp4
+  ffplay -v warning tmpcmp1.mp4
+
+
+
+<video src="vid/setpts_clk_example.mp4" width="640" height="480" controls preload></video>
 
 ::
 
