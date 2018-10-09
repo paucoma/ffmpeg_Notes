@@ -135,21 +135,21 @@ Examples
 
 ::
 
-SETLOCAL
-SET myin=sktin.mp4
-SET expr1a="(PTS-STARTPTS)*(1-0.35*N/(FR))"
-SET expr1b="(PTS-STARTPTS)*(0.3+0.7*N/(FR*2))"
-SET expr1e="(PTS-STARTPTS)*1"
-SET expr1c="(PTS-STARTPTS)*(1.7-0.35*N/(FR))"
-SET expr1d="(PTS-STARTPTS)*(1-0.4*N/(FR*2.5))"
+  SETLOCAL
+  SET myin=sktin.mp4
+  SET expr1a="(PTS-STARTPTS)*(1-0.35*N/(FR))"
+  SET expr1b="(PTS-STARTPTS)*(0.3+0.7*N/(FR*2))"
+  SET expr1e="(PTS-STARTPTS)*1"
+  SET expr1c="(PTS-STARTPTS)*(1.7-0.35*N/(FR))"
+  SET expr1d="(PTS-STARTPTS)*(1-0.4*N/(FR*2.5))"
 
-ffmpeg -v info -i %myin% -an -filter_complex ^"^
-[0:v]trim=0:1,setpts=%expr1a%[v1];^
-[0:v]trim=1:3,setpts=%expr1b%[v2];^
-[0:v]trim=3:4,setpts=%expr1c%[v3];^
-[0:v]trim=4:7,setpts=%expr1d%[v4];^
-[0:v]trim=7,setpts=%expr1e%[v5];^
-[v1][v2][v3][v4][v5]concat=n=5:v=1" -y ssout1.mp4
-ffmpeg -v warning -i %myin% -i ssout1.mp4 -an -filter_complex ^
-"[0:v][1:v]hstack[v]" -map "[v]" -y tmpcmp1.mp4
-ffplay -v warning tmpcmp1.mp4
+  ffmpeg -v info -i %myin% -an -filter_complex ^"^
+  [0:v]trim=0:1,setpts=%expr1a%[v1];^
+  [0:v]trim=1:3,setpts=%expr1b%[v2];^
+  [0:v]trim=3:4,setpts=%expr1c%[v3];^
+  [0:v]trim=4:7,setpts=%expr1d%[v4];^
+  [0:v]trim=7,setpts=%expr1e%[v5];^
+  [v1][v2][v3][v4][v5]concat=n=5:v=1" -y ssout1.mp4
+  ffmpeg -v warning -i %myin% -i ssout1.mp4 -an -filter_complex ^
+  "[0:v][1:v]hstack[v]" -map "[v]" -y tmpcmp1.mp4
+  ffplay -v warning tmpcmp1.mp4
