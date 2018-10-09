@@ -125,6 +125,7 @@ In the following graph we can see the inverse slopes of previously graphed ramps
 **Why we cannot do backwards video with this formula approach**
 
 As we can see in the following graph:
+
 .. image:: img/setpts_graph_backintime.png
 
 Frames from the future would get mapped to the same pts_time as past frames have already been maped.
