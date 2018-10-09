@@ -2,7 +2,7 @@
 Exploring ffmpeg setpts for slowmotion / fastmotion video
 ==========================================================
 
-An explanation of the **pts**, presentation time stamp, can be found [here](https://stackoverflow.com/questions/43333542/what-is-video-timescale-timebase-or-timestamp-in-ffmpeg/43337235#43337235)
+An explanation of the **pts**, presentation time stamp, can be found `here<https://stackoverflow.com/questions/43333542/what-is-video-timescale-timebase-or-timestamp-in-ffmpeg/43337235#43337235>`_
 
 Timebase = 1/75; Timescale = 75
  Frame        pts           pts_time
@@ -14,48 +14,51 @@ Timebase = 1/75; Timescale = 75
 
 In a constant frame rate video, we can interpret the relationship between Frame N and PTS as the following linear function.
 
-.. image:: img/setpts_graph_PTSvsN.png
+.. image:: img/setpts_graph_PTSvsN.jpg
 
 The derivative (slope) of this function is the speed at which it is reproducing the frames, i.e. 1 in this case, as we have normalized it for simplicity.
 
-The ffmpeg documentation describing the parameters we can touch can be found [here](http://ffmpeg.org/ffmpeg-all.html#setpts_002c-asetpts)
+The ffmpeg documentation describing the parameters we can touch can be found `here<http://ffmpeg.org/ffmpeg-all.html#setpts_002c-asetpts>`_
 
 
-`ffmpeg -i input.mp4 -an -vf "setpts=PTS*1.0" output.mp4`
+:code:`ffmpeg -i input.mp4 -an -vf "setpts=PTS*1.0" output.mp4`
 
 will not modify the timestamps at all.
 We can view this function as `f(pts)=pts*1.0`, just as the linear graph presented before.
 
-`ffplay -i input.mp4 -an -vf "setpts=2.0*PTS" output.mp4`
+:code:`ffplay -i input.mp4 -an -vf "setpts=2.0*PTS" output.mp4`
 
 will play at half speed
 We can view this function as `f(pts)=pts*2.0`, just as the linear graph presented before, but with a higher slope, specifically 2. This means that each frame is more spaced out in time and therefore it will take longer to reproduce the same frames.
 
-`ffplay -i input.mp4 -an -vf "setpts=0.5*PTS" output.mp4`
+:code:`ffplay -i input.mp4 -an -vf "setpts=0.5*PTS" output.mp4`
 
 will play at double speed
 We can view this function as `f(pts)=pts*0.5`, just as the linear graph presented before, but with a lower slope, specifically 0.5. This means that each frame is more tightly spaced in time and therefore it will take shorter to reproduce the same frames.
 
 The following graph shows these pts transformations.
 
-<image here>
+.. image:: img/setpts_graph_cnstSpeed.png
 
-you could view the multiplier as `setpts=(<input_speed>/<output_speed>)*...` so a number greater than 1 would mean that output is slower than the input and vice-versa
+you could view the multiplier as :code:`setpts=(<input_speed>/<output_speed>)*...` so a number greater than 1 would mean that output is slower than the input and vice-versa
 
 Piece-wise speed modification
 -----------------------------
 
-As presented in [this stackoverflow answer](https://video.stackexchange.com/a/21804/23130) we can build a complex filter where we apply a pts redefinition at specific parts of a video.
+As presented in `this stackoverflow answer<https://video.stackexchange.com/a/21804/23130>`_ we can build a complex filter where we apply a pts redefinition at specific parts of a video.
 
-ffmpeg -i in.mp4 -an -filter_complex ^
-[0:v]trim=0:1,setpts="(PTS-STARTPTS)*0.5"[v1];^
-[0:v]trim=1,setpts="(PTS-STARTPTS)*2.0"[v2];^
-[v1][v2]concat=n=2:v=1 -y ssout1.mp4
+::
+
+  ffmpeg -i in.mp4 -an -filter_complex ^
+  [0:v]trim=0:1,setpts="(PTS-STARTPTS)*0.5"[v1];^
+  [0:v]trim=1,setpts="(PTS-STARTPTS)*2.0"[v2];^
+  [v1][v2]concat=n=2:v=1 -y ssout1.mp4
+
 
 With this setup it is important to note that we cannot just use PTS directly otherwise, unexpected results will appear.
 
-PTS - "The presentation timestamp in input"
-STARTPTS - "The PTS of the first frame."
+  * :code:`PTS` - "The presentation timestamp in input"
+  * :code:`STARTPTS` - "The PTS of the first frame."
 
 The PTS of a file increases as time goes by. PTS at t=0.5s may be 1000 and at t=1s may be 2000. If we split a video by trim the first frame that enters the first trim=0:1 will be PTS=0 and STARTPTS=0, but in the second trim the first frame will be PTS=2000 and STARTPTS=2000. If we want everything 0 based, we should take this into account by defining our PTS to modify as a relative one by subracting the first frame PTS on the input from the current PTS = `(PTS-STARTPTS)`.
 
@@ -71,10 +74,10 @@ FRAME_RATE, FR - frame rate, only defined for constant frame-rate video
 
 so, lets assume we are working with a constant frame-rate video. We can design a formula as such.
 
-`[0:v]trim=0:2,setpts="(PTS-STARTPTS)*(0.5+0.5*N/(FR*2))";`
+:code:`[0:v]trim=0:2,setpts="(PTS-STARTPTS)*(0.5+0.5*N/(FR*2))";`
 
-trim=0:2 - we work on a 2 second segment of our input video
-FR*2 - is the total number of frames in 2 seconds of video
+  * :code:`trim=0:2` - we work on a 2 second segment of our input video
+  * :code:`FR*2` - is the total number of frames in 2 seconds of video
 
 Here we see that our ramp starts with a multiplier of 0.5 and as we move ahead in time we will reach a multiplier of 1 when we have reached the total number of frame in this segment.
 
@@ -86,19 +89,19 @@ The speed at which it is going will be the derivative of this function: `y'=0.5+
 
 Following a couple examples of ramps and their derivatives corresponding to the previous formula and the following:
 
-`[0:v]trim=0:2,setpts="(PTS-STARTPTS)*(0.2+0.4*N/(FR*2))";`
+  * :code:`[0:v]trim=0:2,setpts="(PTS-STARTPTS)*(0.2+0.4*N/(FR*2))";`
 
-<image here>
+.. image:: img/setpts_graph_posSpeedRamp.png
 
 derivatives of the functions are represented as dashed lines.
 
 Here we can define a bit more generically our formula:
 
-`[0:v]trim=m:n,setpts="(PTS-STARTPTS)*(a+b*N/(FR*(n-m)))";`
+  * :code:`[0:v]trim=m:n,setpts="(PTS-STARTPTS)*(a+b*N/(FR*(n-m)))";`
 
-a = start speed (a>0)
-b = --> a+2*b = end speed
-a + b = duration of modified clip
+  * a = start speed (a>0)
+  * b = --> a+2*b = end speed
+  * a + b = duration of modified clip
 
 We can see these numbers also in the graph.
 
@@ -106,32 +109,25 @@ Whats about negative slopes? i.e. from slow to faster speeds.
 
 Well theoretically we just need b to be negative, but lets take a look at what we have in our general formula if we consider b < 0
 
-- duration of the modified clip needs to be greater than 0:
+  - duration of the modified clip needs to be greater than 0:
 
-`a+b > 0` --> `a > -b`
+    + `a+b > 0` --> `a > -b`
 
-- we will only consider positive speeds at the moment (no backwards video)
+  - we will only consider positive speeds at the moment (no backwards video)
 
-`a+2*b > 0` --> `a > -2b`
+    + `a+2*b > 0` --> `a > -2b`
 
 In the following graph we can see the inverse slopes of previously graphed ramps:
 
-<image graph here>
+.. image:: img/setpts_graph_negSpeedRamp.png
 
 
 **Why we cannot do backwards video with this formula approach**
 
 As we can see in the following graph:
-C:\tmp\vid\Backwards.png
+.. image:: img/setpts_graph_backintime.png
 
 Frames from the future would get mapped to the same pts_time as past frames have already been maped.
-
-
-
-.. |Graph_ConstantSpeed| image:: img/setpts_graph_cnstSpeed.png
-.. |Graph_posSpeedRamp| image:: img/setpts_graph_posSpeedRamp.png
-.. |Graph_negSpeedRamp| image:: img/setpts_graph_negSpeedRamp.png
-.. |Graph_backwardsRamp| image:: img/setpts_graph_backintime.png
 
 Examples
 ---------
