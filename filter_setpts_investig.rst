@@ -1,3 +1,4 @@
+==========================================================
 Exploring ffmpeg setpts for slowmotion / fastmotion video
 ==========================================================
 
@@ -13,7 +14,7 @@ Timebase = 1/75; Timescale = 75
 
 In a constant frame rate video, we can interpret the relationship between Frame N and PTS as the following linear function.
 
-<image here>
+|Graph_normalizedPTSvsN|
 
 The derivative (slope) of this function is the speed at which it is reproducing the frames, i.e. 1 in this case, as we have normalized it for simplicity.
 
@@ -124,6 +125,15 @@ As we can see in the following graph:
 C:\tmp\vid\Backwards.png
 
 Frames from the future would get mapped to the same pts_time as past frames have already been maped.
+
+
+.. |Graph_normalizedPTSvsN| image:: img/setpts_graph_PTSvsN.png
+   :align: left
+   :width: 200
+.. |Graph_ConstantSpeed| image:: img/setpts_graph_cnstSpeed.png
+.. |Graph_posSpeedRamp| image:: img/setpts_graph_posSpeedRamp.png
+.. |Graph_negSpeedRamp| image:: img/setpts_graph_negSpeedRamp.png
+.. |Graph_backwardsRamp| image:: img/setpts_graph_backintime.png
 
 Examples
 ---------
