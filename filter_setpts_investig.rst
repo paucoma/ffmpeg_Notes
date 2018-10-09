@@ -2,7 +2,7 @@
 Exploring ffmpeg setpts for slowmotion / fastmotion video
 ==========================================================
 
-An explanation of the **pts**, presentation time stamp, can be found `here<https://stackoverflow.com/questions/43333542/what-is-video-timescale-timebase-or-timestamp-in-ffmpeg/43337235#43337235>`_
+An explanation of the **pts**, presentation time stamp, can be found `here <https://stackoverflow.com/questions/43333542/what-is-video-timescale-timebase-or-timestamp-in-ffmpeg/43337235#43337235>`_
 
 Timebase = 1/75; Timescale = 75
  Frame        pts           pts_time
@@ -18,7 +18,7 @@ In a constant frame rate video, we can interpret the relationship between Frame 
 
 The derivative (slope) of this function is the speed at which it is reproducing the frames, i.e. 1 in this case, as we have normalized it for simplicity.
 
-The ffmpeg documentation describing the parameters we can touch can be found `here<http://ffmpeg.org/ffmpeg-all.html#setpts_002c-asetpts>`_
+The ffmpeg documentation describing the parameters we can touch can be found `here <http://ffmpeg.org/ffmpeg-all.html#setpts_002c-asetpts>`_
 
 
 :code:`ffmpeg -i input.mp4 -an -vf "setpts=PTS*1.0" output.mp4`
@@ -45,7 +45,7 @@ you could view the multiplier as :code:`setpts=(<input_speed>/<output_speed>)*..
 Piece-wise speed modification
 -----------------------------
 
-As presented in `this stackoverflow answer<https://video.stackexchange.com/a/21804/23130>`_ we can build a complex filter where we apply a pts redefinition at specific parts of a video.
+As presented in `this stack-overflow answer <https://video.stackexchange.com/a/21804/23130>`_ we can build a complex filter where we apply a pts redefinition at specific parts of a video.
 
 ::
 
@@ -175,9 +175,7 @@ Examples
   ffplay -v warning tmpcmp1.mp4
 
 
-.. raw:: html
-
-    <video src="vid/setpts_clk_example.mp4" width="640" height="480" controls preload></video>
+    `example video <./vid/setpts_clk_example.mp4>`_
 
 
 ::
