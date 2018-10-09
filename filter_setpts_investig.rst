@@ -177,8 +177,8 @@ Examples
 
 .. raw:: html
 
-   <video src="vid/setpts_clk_example.mp4" width="640" height="480" controls preload></video>
-  
+    <video src="vid/setpts_clk_example.mp4" width="640" height="480" controls preload></video>
+
 
 ::
 
