@@ -4,13 +4,22 @@ Exploring ffmpeg setpts for slowmotion / fastmotion video
 
 An explanation of the **pts**, presentation time stamp, can be found `here <https://stackoverflow.com/questions/43333542/what-is-video-timescale-timebase-or-timestamp-in-ffmpeg/43337235#43337235>`_
 
-Timebase = 1/75; Timescale = 75
- Frame        pts           pts_time
-   0          0          0 x 1/75 = 0.00
-   1          3          3 x 1/75 = 0.04
-   2          6          6 x 1/75 = 0.08
-   3          9          9 x 1/75 = 0.12
-   ...
+- Timebase = 1/75; Timescale = 75
+
++-------+-----+----------------+
+| Frame | pts |    pts_time    |
++=======+=====+================+
+| 0     |0    |0 x 1/75 = 0.00 |
++-------+-----+----------------+
+| 1     | 3   |3 x 1/75 = 0.04 |
++-------+-----+----------------+
+| 2     | 6   |6 x 1/75 = 0.08 |
++-------+-----+----------------+
+| 3     | 9   |9 x 1/75 = 0.12 |
++-------+-----+----------------+
+| ...   | ... | ...            |
++-------+-----+----------------+
+
 
 In a constant frame rate video, we can interpret the relationship between Frame N and PTS as the following linear function.
 
