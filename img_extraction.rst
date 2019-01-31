@@ -1,4 +1,3 @@
-
 Extract an image from video frames
 ==================================
 As stated in the `ffmpeg documentation <https://ffmpeg.org/ffmpeg.html#Synopsis>`_ : ffmpeg command line options are specified as
@@ -75,7 +74,7 @@ Grab from an RTSP feed
       choice /C ˆ /D ˆ /N /T 3
       goto loop
 
- 
+
 Resources
 ---------
   - `ffmpeg -vframes option <https://trac.ffmpeg.org/wiki/Create%20a%20thumbnail%20image%20every%20X%20seconds%20of%20the%20video>`_
