@@ -20,6 +20,7 @@ Filename generation
     *<fmt>* :
 
       - **image2** : `image2 is an image file muxer <https://www.ffmpeg.org/ffmpeg-formats.html#image2>`_, writes video frames to image files.
+
         + :code:`start_number <n>` : Start the sequence from <n>. Default : 1.
         + :code:`update 1` : if update == 1 filename interpreted as literal text. No patterns interpreted, Default : 0
         + :code:`strftime 1` : define the filename with date and time information , `strftime() <http://www.cplusplus.com/reference/ctime/strftime/>`_ , Default 0.
@@ -60,6 +61,7 @@ Rate of image image extraction
 Example usage
 =============
 
+-----------------------
 Grab from an RTSP feed
 -----------------------
 
@@ -76,7 +78,8 @@ Grab from an RTSP feed
 
 
 Resources
----------
+=========
+
   - `ffmpeg -vframes option <https://trac.ffmpeg.org/wiki/Create%20a%20thumbnail%20image%20every%20X%20seconds%20of%20the%20video>`_
   - https://ffmpeg.org/ffmpeg.html
   - https://www.ffmpeg.org/ffmpeg-formats.html
